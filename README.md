@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Tutor Chat
+
+An AI-powered science learning companion built with Next.js 16, TypeScript, and the Vercel AI SDK.
+
+## Features
+
+- Interactive AI chat interface for science topics
+- Flashcard generation using AI tools
+- Real-time streaming responses
+- Support for Physics, Chemistry, and Biology subjects
+- Responsive design with Tailwind CSS
+
+## Tech Stack
+
+- **Framework**: Next.js 16 with App Router
+- **Language**: TypeScript
+- **AI Integration**: Vercel AI SDK with OpenAI provider
+- **LLM Provider**: OpenAI GPT-4.o mini (via Vercel AI SDK)
+- **Styling**: Tailwind CSS
+- **Deployment**: Vercel
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- OpenAI API key
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env.local
+   ```
+   
+4. Add your OpenAI API key to `.env.local`:
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+### Development
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Build the application for production:
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+├── app/                 # Next.js App Router pages and API routes
+│   ├── api/chat/       # Chat API endpoint
+│   ├── layout.tsx      # Root layout
+│   └── page.tsx        # Home page
+├── components/         # React components
+│   ├── ChatInterface.tsx
+│   ├── FlashcardViewer.tsx
+│   └── index.ts
+├── lib/               # Configuration and utilities
+│   └── config.ts
+├── types/             # TypeScript type definitions
+│   └── index.ts
+└── utils/             # Utility functions
+    └── index.ts
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Implementation Status
 
-## Deploy on Vercel
+- [x] Project setup and dependencies (using Vercel AI SDK only)
+- [x] Core data models and types (basic structure implemented)
+- [ ] Chat API endpoint with streaming
+- [ ] Flashcard generation tool
+- [ ] Chat interface component
+- [ ] Flashcard viewer component
+- [ ] Integration and state management
+- [ ] Error handling
+- [ ] Responsive design
+- [ ] Deployment configuration
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Key Dependencies
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `ai` - Vercel AI SDK core package
+- `@ai-sdk/openai` - OpenAI provider for Vercel AI SDK
+
+## License
+
+This a simple prototype assignment for pallo. 

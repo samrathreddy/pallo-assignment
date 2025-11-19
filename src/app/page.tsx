@@ -131,6 +131,24 @@ export default function Home() {
     }
   };
 
+  // Handle like message
+  const handleLikeMessage = (messageId: string) => {
+    setMessages(prev => prev.map(msg => 
+      msg.id === messageId 
+        ? { ...msg, liked: !msg.liked, disliked: false }
+        : msg
+    ));
+  };
+
+  // Handle dislike message
+  const handleDislikeMessage = (messageId: string) => {
+    setMessages(prev => prev.map(msg => 
+      msg.id === messageId 
+        ? { ...msg, disliked: !msg.disliked, liked: false }
+        : msg
+    ));
+  };
+
   // Handle sending messages with streaming support
   const handleSendMessage = useCallback(async (messageContent: string) => {
     if (!messageContent.trim() || isLoading) return;
@@ -214,7 +232,6 @@ export default function Home() {
       // Read the streaming response
       let buffer = '';
       let hasStartedStreaming = false;
-      let updateTimeout: NodeJS.Timeout | null = null;
       
       while (true) {
         const { done, value } = await reader.read();
@@ -540,6 +557,8 @@ export default function Home() {
               isStreaming={isStreaming}
               messageFlashcards={messageFlashcards}
               onViewFlashcards={viewMessageFlashcards}
+              onLikeMessage={handleLikeMessage}
+              onDislikeMessage={handleDislikeMessage}
             />
           </div>
         </div>

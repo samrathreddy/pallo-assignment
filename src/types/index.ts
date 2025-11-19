@@ -4,6 +4,8 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  liked?: boolean;
+  disliked?: boolean;
 }
 
 // Flashcard types
@@ -126,6 +128,8 @@ export interface ChatInterfaceProps {
   isStreaming?: boolean;
   messageFlashcards?: Record<string, Flashcard[]>;
   onViewFlashcards?: (messageId: string) => void;
+  onLikeMessage?: (messageId: string) => void;
+  onDislikeMessage?: (messageId: string) => void;
 }
 
 export interface FlashcardViewerProps {

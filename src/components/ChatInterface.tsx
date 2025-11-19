@@ -30,7 +30,9 @@ export default function ChatInterface({
   isLoading,
   isStreaming = false,
   messageFlashcards = {},
-  onViewFlashcards
+  onViewFlashcards,
+  onLikeMessage,
+  onDislikeMessage
 }: ChatInterfaceProps) {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -43,6 +45,7 @@ export default function ChatInterface({
   const lastScrollTopRef = useRef(0);
   const autoScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastMessageCountRef = useRef(0);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
   // Check if user is at the bottom with a reasonable threshold
   const isAtBottom = () => {
@@ -186,6 +189,30 @@ export default function ChatInterface({
         top: messagesContainerRef.current.scrollHeight,
         behavior: 'smooth'
       });
+    }
+  };
+
+  const handleCopyMessage = async (content: string, messageId: string) => {
+    try {
+      // Format the content to preserve markdown formatting
+      const formattedContent = content;
+      await navigator.clipboard.writeText(formattedContent);
+      setCopiedMessageId(messageId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy message:', err);
+    }
+  };
+
+  const handleLike = (messageId: string) => {
+    if (onLikeMessage) {
+      onLikeMessage(messageId);
+    }
+  };
+
+  const handleDislike = (messageId: string) => {
+    if (onDislikeMessage) {
+      onDislikeMessage(messageId);
     }
   };
 
@@ -340,19 +367,100 @@ export default function ChatInterface({
                     {formatTimestamp(message.timestamp)}
                   </div>
                   
-                  {/* View Cards button for assistant messages with flashcards */}
-                  {message.role === 'assistant' && 
-                   messageFlashcards[message.id] && 
-                   messageFlashcards[message.id].length > 0 && 
-                   onViewFlashcards && (
-                    <button
-                      onClick={() => onViewFlashcards(message.id)}
-                      className="text-xs bg-green-100 text-green-700 hover:bg-green-200 px-2 py-1 rounded-md transition-colors touch-manipulation ml-2"
-                      title={`View ${messageFlashcards[message.id].length} flashcard${messageFlashcards[message.id].length !== 1 ? 's' : ''}`}
-                    >
-                      📚 View Cards ({messageFlashcards[message.id].length})
-                    </button>
-                  )}
+                  <div className="flex items-center space-x-1">
+                    {/* Action buttons for assistant messages */}
+                    {message.role === 'assistant' && (
+                      <div className="flex items-center space-x-1">
+                        {/* Like button */}
+                        <button
+                          onClick={() => handleLike(message.id)}
+                          className={`p-1 rounded transition-all duration-200 hover:bg-gray-600 ${
+                            message.liked ? 'text-green-400' : 'text-gray-400 hover:text-green-400'
+                          }`}
+                          title="Like this response"
+                        >
+                          <svg 
+                            className={`w-4 h-4 transition-transform duration-200 ${
+                              message.liked ? 'scale-110' : 'hover:scale-110'
+                            }`} 
+                            fill={message.liked ? 'currentColor' : 'none'} 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              strokeWidth={2} 
+                              d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" 
+                            />
+                          </svg>
+                        </button>
+
+                        {/* Dislike button */}
+                        <button
+                          onClick={() => handleDislike(message.id)}
+                          className={`p-1 rounded transition-all duration-200 hover:bg-gray-600 ${
+                            message.disliked ? 'text-red-400' : 'text-gray-400 hover:text-red-400'
+                          }`}
+                          title="Dislike this response"
+                        >
+                          <svg 
+                            className={`w-4 h-4 transition-transform duration-200 ${
+                              message.disliked ? 'scale-110 rotate-180' : 'hover:scale-110 rotate-180'
+                            }`} 
+                            fill={message.disliked ? 'currentColor' : 'none'} 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              strokeWidth={2} 
+                              d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" 
+                            />
+                          </svg>
+                        </button>
+
+                        {/* Copy button */}
+                        <button
+                          onClick={() => handleCopyMessage(message.content, message.id)}
+                          className={`p-1 rounded transition-all duration-200 hover:bg-gray-600 ${
+                            copiedMessageId === message.id ? 'text-green-400' : 'text-gray-400 hover:text-blue-400'
+                          }`}
+                          title={copiedMessageId === message.id ? 'Copied!' : 'Copy message'}
+                        >
+                          {copiedMessageId === message.id ? (
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                            </svg>
+                          ) : (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round" 
+                                strokeWidth={2} 
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" 
+                              />
+                            </svg>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    
+                    {/* View Cards button for assistant messages with flashcards */}
+                    {message.role === 'assistant' && 
+                     messageFlashcards[message.id] && 
+                     messageFlashcards[message.id].length > 0 && 
+                     onViewFlashcards && (
+                      <button
+                        onClick={() => onViewFlashcards(message.id)}
+                        className="text-xs bg-green-100 text-green-700 hover:bg-green-200 px-2 py-1 rounded-md transition-colors touch-manipulation ml-2"
+                        title={`View ${messageFlashcards[message.id].length} flashcard${messageFlashcards[message.id].length !== 1 ? 's' : ''}`}
+                      >
+                        📚 View Cards ({messageFlashcards[message.id].length})
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

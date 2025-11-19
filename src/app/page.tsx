@@ -202,6 +202,36 @@ export default function Home() {
         try {
           const errorData = await response.json();
           const errorMessage = errorData.error || errorData.message || `HTTP error! status: ${response.status}`;
+          
+          // If it's a validation error (400), show it as an assistant message
+          if (response.status === 400 && errorData.errorType === 'VALIDATION') {
+            let friendlyMessage = '';
+            
+            if (errorMessage.includes('too long')) {
+              friendlyMessage = `I'd love to help, but your message is quite long! ${errorMessage} 
+
+Try breaking it down into smaller questions - I can help you better that way. What's the main science topic you'd like to explore?`;
+            } else if (errorMessage.includes('science topics only')) {
+              friendlyMessage = `I'm here to help with science topics like physics, chemistry, and biology! ${errorMessage} 
+
+What would you like to learn about in science today?`;
+            } else {
+              friendlyMessage = `I'm sorry, but there's an issue with your message. ${errorMessage} 
+
+Please try again, and I'll be happy to help with your science questions!`;
+            }
+            
+            const assistantMessage: ChatMessage = {
+              id: generateId(),
+              role: 'assistant',
+              content: friendlyMessage,
+              timestamp: new Date()
+            };
+            
+            setMessages(prev => [...prev, assistantMessage]);
+            return; // Exit early, don't throw error
+          }
+          
           throw new Error(errorMessage);
         } catch (parseError) {
           // If we can't parse the error response, use the status

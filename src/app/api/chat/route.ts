@@ -6,6 +6,7 @@ import { ChatMessage } from '@/types';
 import { generateFlashcards } from '@/lib/flashcards';
 import { PROMPTS } from '@/data/prompts';
 import { createDetailedErrorResponse, logError, getHttpStatusCode, getErrorMessage } from '@/data/errors';
+import { processMessagesForChat } from '@/lib/chat-context';
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,13 +16,23 @@ export async function POST(req: NextRequest) {
     // Parse the request body
     const { messages }: { messages: ChatMessage[] } = await req.json();
     
-    if (!messages || !Array.isArray(messages)) {
+    // Process messages using chat-context utilities with proper error handling
+    let formattedMessages, contextualPrompt;
+    try {
+      const result = processMessagesForChat(messages, PROMPTS.TUTOR_SYSTEM);
+      formattedMessages = result.formattedMessages;
+      contextualPrompt = result.contextualPrompt;
+    } catch (validationError) {
+      // Handle validation errors with user-friendly responses
+      const errorMessage = (validationError as Error).message;
+      
+      // Return user-friendly error response for validation issues
       const errorResponse = {
         success: false,
-        error: 'Invalid messages format. Expected an array of messages.',
+        error: errorMessage,
         errorType: 'VALIDATION',
         statusCode: 400,
-        message: 'Error: Invalid messages format. Expected an array of messages.',
+        message: `Error: ${errorMessage}`,
         timestamp: new Date().toISOString()
       };
       
@@ -34,18 +45,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Convert ChatMessage format to AI SDK format and limit to last 4 messages
-    const formattedMessages = messages.slice(-4).map(msg => ({
-      role: msg.role,
-      content: msg.content,
-    }));
-
     // Create streaming response using Vercel AI SDK with tool calling support
     const result = await streamText({
       model: `openai/${config.ai.model}`,
       messages: formattedMessages,
       temperature: config.ai.temperature,
-      system: PROMPTS.TUTOR_SYSTEM,
+      system: contextualPrompt,
       tools: {
         generateFlashcards: {
           description: PROMPTS.TOOLS.GENERATE_FLASHCARDS.description,

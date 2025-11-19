@@ -213,3 +213,22 @@ input::-moz-placeholder {
 input:-ms-input-placeholder {
   color: #9ca3af !important;
 }
+
+/* KaTeX math rendering styles for dark theme */
+.markdown-content .katex {
+  color: #e5e7eb !important;
+}
+
+.markdown-content .katex .base {
+  color: #e5e7eb !important;
+}
+
+.markdown-content .katex-display {
+  margin: 1rem 0 !important;
+  text-align: center;
+}
+
+.markdown-content .katex-display > .katex {
+  display: inline-block;
+  white-space: nowrap;
+}

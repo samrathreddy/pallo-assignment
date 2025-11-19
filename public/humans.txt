@@ -1,0 +1,19 @@
+# humanstxt.org
+
+/* TEAM */
+Developer: Team Pallo AI
+Contact: team [at] pallo.ai
+Location: Global
+
+/* THANKS */
+OpenAI for AI capabilities
+Vercel for hosting and AI SDK
+Next.js team for the framework
+KaTeX for math rendering
+
+/* SITE */
+Last update: 2025/11/19
+Language: English
+Doctype: HTML5
+IDE: Cursor
+Technologies: Next.js, TypeScript, React, Tailwind CSS, OpenAI, Vercel

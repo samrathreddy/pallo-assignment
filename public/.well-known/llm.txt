@@ -1,0 +1,18 @@
+# AI Science Tutor
+
+This is an educational web application that provides AI-powered tutoring for science subjects.
+
+## Purpose
+Interactive learning platform for Physics, Chemistry, and Biology students.
+
+## Technology
+Built with Next.js, TypeScript, and OpenAI integration.
+
+## Features
+- AI tutoring conversations
+- Auto-generated flashcards
+- LaTeX math rendering
+- Real-time streaming responses
+
+## Contact
+Team Pallo AI

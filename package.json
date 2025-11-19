@@ -1,6 +1,28 @@
 {
-  "name": "ai-tutor-chat",
-  "version": "0.1.0",
+  "name": "ai-science-tutor",
+  "version": "1.0.0",
+  "description": "Interactive AI-powered science tutor for physics, chemistry, and biology with flashcard generation",
+  "author": "Team Pallo AI",
+  "license": "Assignment",
+  "keywords": [
+    "ai-tutor",
+    "science-education",
+    "physics",
+    "chemistry", 
+    "biology",
+    "flashcards",
+    "nextjs",
+    "openai",
+    "education-technology"
+  ],
+  "homepage": "https://pallo.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samrathreddy/pallo-assignment.git"
+  },
+  "bugs": {
+    "url": "https://github.com/samrathreddy/pallo-assignment/issues"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",

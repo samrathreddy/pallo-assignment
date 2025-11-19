@@ -87,13 +87,13 @@ src/
 
 - [x] Project setup and dependencies (using Vercel AI SDK only)
 - [x] Core data models and types (basic structure implemented)
-- [ ] Chat API endpoint with streaming
-- [ ] Flashcard generation tool
-- [ ] Chat interface component
-- [ ] Flashcard viewer component
-- [ ] Integration and state management
-- [ ] Error handling
-- [ ] Responsive design
+- [x] Chat API endpoint with streaming
+- [x] Flashcard generation tool
+- [x] Chat interface component
+- [x] Flashcard viewer component
+- [x] Integration and state management
+- [x] Error handling
+- [x] Responsive design
 - [ ] Deployment configuration
 
 ## Key Dependencies

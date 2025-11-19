@@ -22,35 +22,32 @@ export interface FlashcardGenerationParams {
   subject: 'physics' | 'chemistry' | 'biology';
 }
 
-// Tool schema for flashcard generation
-export interface FlashcardToolSchema {
-  name: 'generateFlashcards';
-  description: string;
-  parameters: {
-    type: 'object';
-    properties: {
-      topic: { type: 'string'; description: string };
-      count: { type: 'number'; description: string };
-      subject: { type: 'string'; enum: ['physics', 'chemistry', 'biology'] };
-    };
-    required: ['topic', 'count', 'subject'];
-  };
-}
-
-// Constant for the actual tool schema
-export const FLASHCARD_TOOL_SCHEMA: FlashcardToolSchema = {
+// Tool schema for flashcard generation (compatible with Vercel AI SDK)
+export const generateFlashcardsToolSchema = {
   name: 'generateFlashcards',
-  description: 'Generate educational flashcards for science topics',
+  description: 'Generate educational flashcards for science topics based on user request',
   parameters: {
     type: 'object',
     properties: {
-      topic: { type: 'string', description: 'The science topic for flashcards' },
-      count: { type: 'number', description: 'Number of flashcards to generate' },
-      subject: { type: 'string', enum: ['physics', 'chemistry', 'biology'] }
+      topic: { 
+        type: 'string', 
+        description: 'The specific science topic or concept for the flashcards' 
+      },
+      count: { 
+        type: 'number', 
+        description: 'Number of flashcards to generate (1-10)',
+        minimum: 1,
+        maximum: 10
+      },
+      subject: { 
+        type: 'string', 
+        enum: ['physics', 'chemistry', 'biology'],
+        description: 'The science subject area'
+      }
     },
     required: ['topic', 'count', 'subject']
   }
-};
+} as const;
 
 // Application state
 export interface AppState {
@@ -126,12 +123,16 @@ export interface ChatInterfaceProps {
   messages: ChatMessage[];
   onSendMessage: (message: string) => void;
   isLoading: boolean;
+  isStreaming?: boolean;
+  messageFlashcards?: Record<string, Flashcard[]>;
+  onViewFlashcards?: (messageId: string) => void;
 }
 
 export interface FlashcardViewerProps {
   flashcards: Flashcard[];
   viewMode: 'single' | 'carousel' | 'grid';
   onModeChange: (mode: ViewMode) => void;
+  containerWidth?: number;
 }
 
 export type ViewMode = 'single' | 'carousel' | 'grid';
